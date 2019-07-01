@@ -16,6 +16,6 @@ require("./routes/api/notes")(app);
 // require("./routes/htmlRoutes")(app);
 
 
-app.listen(port, function() {
+app.listen(port,() => {
     console.log(`🌎 Express Server listening on port ${port}`);
 })

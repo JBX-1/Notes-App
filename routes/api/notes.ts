@@ -1,5 +1,6 @@
 // const router = require("express").Router();
 // const notesController = require("../../controllers/booksController");
+// import uuidv4 from 'uuid/v4';
 
 // // Matches with "/api/notes"
 // router.route("/")
@@ -40,48 +41,73 @@ var notesdata = [
 module.exports = function(app) {
   
 
-    // View all notes
-    app.get("/api/notes", function(req, res) {
+    // get route for Viewing all notes
+    app.get("/api/notes",(req, res) => {
       res.json(notesdata);
     });
 
-    // view single note
-    app.get("/api/notes/:note", function(req,res) {
-        var chosen = req.params.note;
-        if(chosen) {
-            for(var i = 0; i < notesdata.length; i++){
-                if(chosen === notesdata[i].name) {
-                    res.json(notesdata[i])
-                    return; 
-                
-                }
-            }
-            res.json("Not in data");
-        }else {
+    // get route for viewing single note
+    app.get("/api/notes/:id",(req,res) => {
+        var chosen = req.params.id;
+        console.log(req.body)
 
-            res.json(chosen)
+        const notesToUpdate = notesdata.filter(note => note.name === chosen);
+
+        if(!notesToUpdate) {
+          res.status(404).json({message: 'No note found'})
         }
+        res.json(notesToUpdate[0])
         
     });
     
-    // create notes
-    app.post("/api/createnotes", function(req, res) {
+    // post for creating notes
+    app.post("/api/createnotes",(req, res) => {
         console.log(req.body);
         // console.log(res.Socket)
         res.json(req.body);
         notesdata.push(req.body)
       });
 
-    // edit notes
-    app.put("/api/editnotes", function(req,res){
+     // PUT route for updating posts
+     app.put("/api/notes/:id",(req, res) => {
 
-    })
+        var chosenId = req.params.id;
 
+        console.log(req.body)
 
-    // delete note
-    // app.delete("",function(req,res){
+        const notesToUpdate = notesdata.filter(note => {
+            return note.id == chosenId 
+        })[0];
+            
+        const index = notesdata.indexOf(notesToUpdate);
+        const keys = Object.keys(req.body);
+
+        keys.forEach(key => {
+            notesToUpdate[key] = req.body[key];
+        });
+
+        notesdata[index] = notesToUpdate;
+
+        res.json(notesToUpdate[index]);
+    });
+
+    // delete route for deleting notes
+     app.delete("/api/notes/:id",(req, res) => {
+
+        var chosenId = req.params.id;
+
+        const notesToUpdate = notesdata.filter(note => {
+            return note.id == chosenId 
+        })[0];
         
-    // })
-  
+
+        const index = notesdata.indexOf(notesToUpdate);
+
+        notesdata.splice(index, 1);
+        
+        res.json({message: `User ${chosenId} deleted.`})
+
+
+    });
   };
   
