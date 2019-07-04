@@ -61,15 +61,16 @@ module.exports = function(app) {
     });
     
     // post for creating notes
-    app.post("/api/createnotes",(req, res) => {
-        console.log(req.body);
+    app.post("/api/notes",(req, res) => {
+        console.log("TCL: req.body", req.body)
         // console.log(res.Socket)
-        res.json(req.body);
         notesdata.push(req.body)
+        // res.json(req.body);
       });
 
      // PUT route for updating posts
      app.put("/api/notes/:id",(req, res) => {
+         console.log("Res",res)
 
         var chosenId = req.params.id;
 
